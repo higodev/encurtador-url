@@ -23,9 +23,11 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class ShortenedLinkServiceImpl implements ShortenedLinkService {
 
-    private final ShortenedLinkRepository repository;
     private static final int SIZE_HASH = 5;
     private static final String FILE_NAME = "/Users/higoalexandre/Development/log-error.txt";
+    private static final String SEPARATOR = "/Users/higoalexandre/Development/log-error.txt";
+
+    private final ShortenedLinkRepository repository;
 
     private String generateHash(){
         String hash = RandomStringUtils.randomAlphanumeric(SIZE_HASH).toUpperCase();
@@ -54,24 +56,21 @@ public class ShortenedLinkServiceImpl implements ShortenedLinkService {
         shortenedLink.setLinkOriginal(shortenedLinkRequestDTO.getLinkOriginal());
         shortenedLink.setHash(generateHash());
 
-        StringBuffer str = new StringBuffer("");
-
         try{
-
             repository.save(shortenedLink);
+        }catch(Exception  e){
 
-        }catch(Exception e){
-
-            str.append(Files.readString(Path.of(FILE_NAME)));
-            str.append("\n ###########");
-            str.append(shortenedLink.getHash());
-            str.append(e.getMessage());
+            StringBuilder str = new StringBuilder("");
+            str.append("\n").append(SEPARATOR).append("\n");
+            str.append(Files.readString(Path.of(FILE_NAME))).append("\n");
+            str.append(shortenedLink.getHash()).append("\n");
+            str.append(e.getMessage()).append("\n");
 
             log.error(str.toString());
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME));
-            writer.write(str.toString());
-            writer.close();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+                writer.write(str.toString());
+            }
 
         }
 
