@@ -25,7 +25,7 @@ public class ShortenedLinkServiceImpl implements ShortenedLinkService {
 
     private static final int SIZE_HASH = 5;
     private static final String FILE_NAME = "/Users/higoalexandre/Development/log-error.txt";
-    private static final String SEPARATOR = "/Users/higoalexandre/Development/log-error.txt";
+    private static final String SEPARATOR = "################################";
 
     private final ShortenedLinkRepository repository;
 
